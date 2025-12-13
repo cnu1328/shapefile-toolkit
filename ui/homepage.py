@@ -67,7 +67,7 @@ def render_homepage(tools: List[Any]) -> None:
         <div style='text-align: center; padding: 2rem 0; color: #666;'>
             <p>
                 <strong>Shapefile Toolkit</strong> v1.0.0<br>
-                Built with Streamlit, GeoPandas, and ❤️
+                Made with ❤️ by **Srinivas Dharpally**
             </p>
             <p style='font-size: 0.9rem;'>
                 💡 Tip: All tools support ZIP files containing shapefile components (.shp, .shx, .dbf, .prj)
