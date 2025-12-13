@@ -39,7 +39,7 @@ st.set_page_config(
             
             **Version:** 1.0.0
             
-            Built with Streamlit, GeoPandas, and ❤️
+            Made with ❤️ by **Srinivas Dharpally**
         """
     }
 )
