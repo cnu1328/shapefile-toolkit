@@ -1,0 +1,5 @@
+id,name,geometry,type
+1,Point Location,POINT (77.5946 12.9716),landmark
+2,Line Route,LINESTRING (77.5946 12.9716, 77.6412 13.0827),road
+3,Area Zone,"POLYGON ((77.5 12.9, 77.6 12.9, 77.6 13.0, 77.5 13.0, 77.5 12.9))",zone
+4,Multi Points,MULTIPOINT ((77.5946 12.9716), (77.6412 13.0827)),cluster
