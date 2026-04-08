@@ -15,6 +15,7 @@ from tools import (
     ReprojectShapefileTool,
     ExcelToCSVTool,
     CSVToShapefileTool,
+    TiffToShapefileTool,
 )
 
 # Import UI components
@@ -97,6 +98,7 @@ def initialize_tools() -> ToolRegistry:
     registry.register_tool("tool_3", ReprojectShapefileTool())
     registry.register_tool("tool_4", ExcelToCSVTool())
     registry.register_tool("tool_5", CSVToShapefileTool())
+    registry.register_tool("tool_6", TiffToShapefileTool())
     
     # Note: TemplateTool is not registered as it's just a template
     # To add it, uncomment the following line:

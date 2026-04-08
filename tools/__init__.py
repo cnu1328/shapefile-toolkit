@@ -8,6 +8,7 @@ from .add_shapefiles import AddShapefilesTool
 from .reproject_shapefile import ReprojectShapefileTool
 from .excel_to_csv import ExcelToCSVTool
 from .csv_to_shapefile import CSVToShapefileTool
+from .tiff_to_shapefile import TiffToShapefileTool
 
 __all__ = [
     "ShapefileToCSVTool",
@@ -16,4 +17,5 @@ __all__ = [
     "ReprojectShapefileTool",
     "ExcelToCSVTool",
     "CSVToShapefileTool",
+    "TiffToShapefileTool",
 ]
