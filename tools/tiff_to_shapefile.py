@@ -108,35 +108,45 @@ def _smooth_mask_morphological(mask: np.ndarray, iterations: int = 2) -> np.ndar
     Remove pixel-level staircase noise from a boolean mask using morphological
     closing (fills small gaps/notches) followed by opening (removes tiny blobs).
 
-    Falls back to a pure-NumPy convolution approach when scipy is unavailable.
+    Uses scipy.ndimage when available; falls back to a pure-NumPy
+    sliding-window approach that is guaranteed to return an array of
+    the same shape as *mask* regardless of kernel parity.
     """
     if iterations == 0:
         return mask
 
     if SCIPY_AVAILABLE:
-        # Disk-shaped structuring element of radius = iterations
         r = max(1, iterations)
         y, x = np.ogrid[-r: r + 1, -r: r + 1]
         struct = (x ** 2 + y ** 2 <= r ** 2)
-        # Close (dilate → erode): fills holes / staircases
         smoothed = binary_closing(mask, structure=struct, iterations=1)
-        # Open  (erode → dilate): removes specks kept from closing
         smoothed = binary_opening(smoothed, structure=struct, iterations=1)
         return smoothed.astype(bool)
-    else:
-        # Lightweight fallback: uniform box-filter → re-threshold at 0.5
-        from numpy.lib.stride_tricks import sliding_window_view
-        k = max(2, iterations * 2 + 1)
-        # Pad, convolve, re-threshold
-        padded = np.pad(mask.astype(float), k // 2, mode="edge")
-        kernel_area = k * k
-        # Use cumulative-sum trick for O(1) box filter
-        cs = np.cumsum(np.cumsum(padded, axis=0), axis=1)
-        h, w = mask.shape
-        smoothed = (
-            cs[k:, k:] - cs[:h, k:] - cs[k:, :w] + cs[:h, :w]
-        ) / kernel_area
-        return smoothed >= 0.5
+
+    # ── NumPy-only fallback ──────────────────────────────────────────────────
+    # Build a box-filter using sliding_window_view with carefully chosen
+    # asymmetric padding so the output shape always equals the input shape.
+    #
+    # For kernel size k and a 1-D axis of length N:
+    #   pad_before = k // 2
+    #   pad_after  = k - 1 - k // 2   (= k//2 for even k, k//2 for odd k too)
+    # After padding: N + (k-1). sliding_window_view gives N + (k-1) - k + 1 = N. ✓
+    from numpy.lib.stride_tricks import sliding_window_view
+
+    k = max(2, iterations * 2 + 1)
+    pad_before = k // 2
+    pad_after = k - 1 - k // 2  # == k//2 for odd k, k//2-1 for even k but still correct
+
+    padded = np.pad(
+        mask.astype(float),
+        ((pad_before, pad_after), (pad_before, pad_after)),
+        mode="edge",
+    )
+
+    # sliding_window_view shape: (H, W, k, k)
+    windows = sliding_window_view(padded, (k, k))         # shape (H, W, k, k)
+    smoothed = windows.mean(axis=(-2, -1)) >= 0.5         # shape (H, W)  ✓
+    return smoothed
 
 
 def _smooth_geometry(geom, pixel_size: float, smooth_level: int):
