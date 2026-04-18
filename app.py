@@ -16,6 +16,7 @@ from tools import (
     ExcelToCSVTool,
     CSVToShapefileTool,
     TiffToShapefileTool,
+    FilterShapefileTool,
 )
 
 # Import UI components
@@ -99,6 +100,7 @@ def initialize_tools() -> ToolRegistry:
     registry.register_tool("tool_4", ExcelToCSVTool())
     registry.register_tool("tool_5", CSVToShapefileTool())
     registry.register_tool("tool_6", TiffToShapefileTool())
+    registry.register_tool("tool_7", FilterShapefileTool())
     
     # Note: TemplateTool is not registered as it's just a template
     # To add it, uncomment the following line:
@@ -166,6 +168,7 @@ def render_sidebar(registry: ToolRegistry) -> None:
             - 🔗 Merge shapefiles
             - ➕ Combine shapefiles
             - 🌐 Reproject CRS
+            - 🔎 Filter by attributes
             
             **Privacy:** All processing happens in your browser. Your data is never stored.
         """)
